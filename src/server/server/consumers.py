@@ -1,58 +1,42 @@
 import json
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-class TicTacToeConsumer(AsyncJsonWebsocketConsumer):
+class Esp8266(AsyncJsonWebsocketConsumer):
     async def connect(self):
-        # Join room group
-        print("connectting")
         await self.channel_layer.group_add(
-            "ft",
+            "Esp8266",
             self.channel_name
         )
         await self.accept()
 
     async def disconnect(self, close_code):
-        print("Disconnected")
         # Leave room group
         await self.channel_layer.group_discard(
             self.channel_name
         )
 
     async def receive(self, text_data):
-        """
-        Receive message from WebSocket.
-        Get the event and send the appropriate event
-        """
-        response = json.loads(text_data)
-        event = response.get("event", None)
-        message = response.get("message", None)
-        if event == 'MOVE':
-            # Send message to room group
-            await self.channel_layer.group_send(self.room_group_name, {
+        try: 
+            data = json.loads(text_data)
+            data.update({
                 'type': 'send_message',
-                'message': message,
-                "event": "MOVE"
-            })
+                'message': "message",
+                "event": "MOVE",
+                "self.channel_name":self.channel_name
+                }
+            )
+        except:
 
-        if event == 'START':
-            # Send message to room group
-            await self.channel_layer.group_send(self.room_group_name, {
+            data = {
                 'type': 'send_message',
-                'message': message,
-                'event': "START"
-            })
-
-        if event == 'END':
-            # Send message to room group
-            await self.channel_layer.group_send(self.room_group_name, {
-                'type': 'send_message',
-                'message': message,
-                'event': "END"
-            })
-
+                'message': "can't loads json",
+                "event": "ERROR"
+                }
+        await self.channel_layer.group_send("Esp8266",data)
     async def send_message(self, res):
         """ Receive message from room group """
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
-            "payload": res,
+            "data": res,
         }))
+    
