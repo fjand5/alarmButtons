@@ -12,11 +12,11 @@
 #include <WebSocketsClient.h>
 
 #include <Hash.h>
-
+#include "OneButton.h"
 WebSocketsClient webSocket;
 
 #define USE_SERIAL Serial
-
+OneButton button(D1, true);
 void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
 
 	switch(type) {
@@ -27,7 +27,7 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
 			USE_SERIAL.printf("[WSc] Connected to url: %s\n", payload);
 
 			// send message to server when Connected
-			webSocket.sendTXT("{\"macAddr\":\"310:45:96:F8:81:A61\",\"buttonNum\":1,\"status\":true}");
+			//webSocket.sendTXT("{\"macAddr\":\"310:45:96:F8:81:A61\",\"buttonNum\":1,\"status\":true}");
 		}
 			break;
 		case WStype_TEXT:
@@ -72,7 +72,7 @@ void setup() {
 
 
 
-    WiFi.begin("Vong Cat-Hide","78787878");
+    WiFi.begin("Vong Cat 3","78787878");
     while (WiFi.status() != WL_CONNECTED
            && millis() < 30000) {
       delay(100);
@@ -86,7 +86,7 @@ void setup() {
     }
 
 	// server address, port and URL
-	webSocket.begin("192.168.2.103", 8000, "/ws/button/");
+	webSocket.begin("192.168.1.8", 8000, "/ws/button/");
 
 	// event handler
 	webSocket.onEvent(webSocketEvent);
@@ -99,8 +99,17 @@ void setup() {
   // expect pong from server within 3000 ms
   // consider connection disconnected if pong is not received 2 times
   webSocket.enableHeartbeat(15000, 3000, 2);
+  button.attachClick([](){
+	webSocket.sendTXT("{\"macAddr\":\"310:45:96:F8:81:A61\",\"buttonNum\":1,\"status\":true}");
+
+  });
+  button.attachLongPressStop([](){
+	webSocket.sendTXT("{\"macAddr\":\"310:45:96:F8:81:A61\",\"buttonNum\":1,\"status\":true}");
+
+  });
 }
 void loop() {
 	webSocket.loop();
+	button.tick();
   
 }
