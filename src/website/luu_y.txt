@@ -1,0 +1,5 @@
+dev:
+    sửa publicPath trong vue.config thành : './'
+
+build:
+    sửa publicPath trong vue.config thành : './static/'

@@ -47,8 +47,6 @@ CHANNEL_LAYERS = {
 }
 ASGI_APPLICATION = "server.asgi.application"
 ALLOWED_HOSTS = ['*']
-
-
 # Application definition
 
 INSTALLED_APPS = [

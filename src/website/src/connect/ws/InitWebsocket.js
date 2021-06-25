@@ -1,6 +1,6 @@
 var connection
-var onOpen = null;
-var onClose = null;
+var onOpen = []
+var onClose = []
 
 var onMessages = []
 function init() {
@@ -12,7 +12,6 @@ function init() {
     let url = "ws://"+window.location.hostname+":8000/ws/maintain/"
     connection = new WebSocket(url)
     connection.onmessage = function(event) {
-
         onMessages.forEach(element => {
             if (element instanceof Function){
                 element(event);
@@ -21,28 +20,34 @@ function init() {
     }
     
     connection.onopen = function(event) {
-        if (onOpen instanceof Function){
-            onOpen(event);
-        }
+
+        onOpen.forEach(element => {
+            if (element instanceof Function){
+                element(event);
+            }
+        });
     }
     connection.onclose = function (event) {
-        if (onClose instanceof Function){
-            onClose(event);
-        }
+
+        onClose.forEach(element => {
+            if (element instanceof Function){
+                element(event);
+            }
+        });
     }
 }
-function setOnOpen(func) {
-    onOpen = func
+function addOnOpen(func) {
+    onOpen.push(func)
 }
-function setOnClose(func) {
-    onClose = func
+function addOnClose(func) {
+    onClose.push(func)
 }
 function addOnMessages(func) {
     onMessages.push(func)
 }
 module.exports = {
     init,
-    setOnOpen,
-    setOnClose,
+    addOnOpen,
+    addOnClose,
     addOnMessages
   };

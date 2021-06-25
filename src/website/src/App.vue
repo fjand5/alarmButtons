@@ -15,11 +15,13 @@
     >
       Mất kết nối
     </CAlert>
+    <ListButton/>
   </div>
 </template>
 
 <script>
-import { init, setOnClose, setOnOpen} from './connect/ws/InitWebsocket'
+import { init, addOnClose, addOnOpen} from './connect/ws/InitWebsocket'
+import ListButton from './components/ListButton.vue'
 export default {
   data: function(){
     return {
@@ -29,12 +31,13 @@ export default {
   },
   name: 'App',
   created: function(){
-    setOnOpen(()=>{
-      this.openAlertCounter = 10,
+    addOnOpen(()=>{
+      this.openAlertCounter = 10
       this.closeAlertCounter =0
+
     })
-    setOnClose(()=>{
-      this.openAlertCounter = 0,
+    addOnClose(()=>{
+      this.openAlertCounter = 0
       this.closeAlertCounter = 10
       setTimeout(() => {
         init()
@@ -48,6 +51,7 @@ export default {
 
   },
   components: {
+    ListButton
   }
 }
 </script>
