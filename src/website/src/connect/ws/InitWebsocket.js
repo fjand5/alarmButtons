@@ -12,9 +12,10 @@ function init() {
     let url = "ws://"+window.location.hostname+":8000/ws/maintain/"
     connection = new WebSocket(url)
     connection.onmessage = function(event) {
+        let data = JSON.parse(event.data).data
         onMessages.forEach(element => {
             if (element instanceof Function){
-                element(event);
+                element(data);
             }
         });
     }
@@ -29,6 +30,9 @@ function init() {
     }
     connection.onclose = function (event) {
 
+        setTimeout(() => {
+            init()
+          }, 3000);
         onClose.forEach(element => {
             if (element instanceof Function){
                 element(event);

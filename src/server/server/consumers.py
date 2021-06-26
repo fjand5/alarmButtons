@@ -39,7 +39,7 @@ class Esp8266(AsyncJsonWebsocketConsumer):
             data.update({
                 'type': 'send_message',
                 'message': "message",
-                "event": "MOVE",
+                "event": "ALARM",
                 "self.channel_name":self.channel_name
                 }
             )

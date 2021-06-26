@@ -1,16 +1,16 @@
 <template>
  <div>
     <CAlert
+    v-if="isConnect"
       color="info"
-      :show.sync="openAlertCounter"
       closeButton
     >
       Đã kết nối với hệ thống
     </CAlert>
 
     <CAlert
+    v-else
       color="danger"
-      :show.sync="closeAlertCounter"
       closeButton
     >
       Mất kết nối
@@ -20,36 +20,31 @@
 </template>
 
 <script>
+
 import { init, addOnClose, addOnOpen} from './connect/ws/InitWebsocket'
 import ListButton from './components/ListButton.vue'
 export default {
   data: function(){
     return {
-      openAlertCounter:0,
-      closeAlertCounter:0
+      isConnect: false
     }
   },
   name: 'App',
   created: function(){
     addOnOpen(()=>{
-      this.openAlertCounter = 10
-      this.closeAlertCounter =0
+      this.isConnect = true
 
     })
     addOnClose(()=>{
-      this.openAlertCounter = 0
-      this.closeAlertCounter = 10
-      setTimeout(() => {
-        init()
-      }, 3000);
+      this.isConnect = false
       
     })
     init()
   },
-  mounted:function(){
-         console.log("mounted");
+  mounted:function(){  
 
-  },
+ 
+ },
   components: {
     ListButton
   }

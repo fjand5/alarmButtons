@@ -18,10 +18,10 @@ def sendWs(data):
 @receiver(post_save)
 def model_save(sender, **kwargs):
     data = {
-                'type': 'send_message',
-                'message': "message",
-                "event": "MOVE",
-                }
+            'type': 'send_message',
+            'message': "message",
+            "event": "MODEL_CHANGE",
+            }
     sendWs(data)
 class Buttons(View):
     def post(self, request):

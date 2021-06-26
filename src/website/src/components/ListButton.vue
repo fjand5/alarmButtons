@@ -11,6 +11,7 @@
       <template #received="{item, index}">
         <td class="py-1">
           <CButton
+            v-if="item.status == false"
             color="primary"
             variant="outline"
             square
@@ -23,6 +24,10 @@
       </template>
     </CDataTable>
   </CCardBody>
+    <video ref="videoRef" 
+    v-show="false"
+    controls="" 
+    ><source src="static/media/alarm.mp3" type="audio/mpeg"></video>
 
 </div>
 </template>
@@ -44,11 +49,17 @@ export default {
       buttons: [],
       fields,
       details: [],
-      collapseDuration: 0
+      collapseDuration: 0,
     }
   },
   methods: {
+    playSound: function(){
+            this.$refs.videoRef.play();
+        
+        
+    },
     recived: function(item){
+
       clearButton(item.id)
     },
     updateButtons: function(){
@@ -61,11 +72,20 @@ export default {
       })
     },
   },
+  mounted: function(){
+        this.playSound()
+  },
   created: function(){
     addOnOpen(()=>{
       this.updateButtons()
     })
-    addOnMessages(()=>{
+    addOnMessages((mess)=>{
+      if(mess.event == "ALARM"){
+        this.$refs.videoRef.loop = true
+         this.playSound();
+      }else{
+        this.$refs.videoRef.pause();
+      }
       this.updateButtons()
     })
   }
