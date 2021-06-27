@@ -9,7 +9,7 @@ function init() {
     if(connection != null){
         connection.close();
     }
-    let url = "ws://"+window.location.hostname+":8000/ws/maintain/"
+    let url = "ws://"+window.location.hostname+"/ws/maintain/"
     connection = new WebSocket(url)
     connection.onmessage = function(event) {
         let data = JSON.parse(event.data).data

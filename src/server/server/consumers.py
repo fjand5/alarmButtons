@@ -21,6 +21,7 @@ async def creteOrUpdateButton(macAddr, buttonNum, status):
 class Esp8266(AsyncJsonWebsocketConsumer):
     async def connect(self):
         client = self.scope['url_route']['kwargs']['client']
+        self.group_name = client
         await self.channel_layer.group_add(
             client,
             self.channel_name
@@ -30,6 +31,7 @@ class Esp8266(AsyncJsonWebsocketConsumer):
     async def disconnect(self, close_code):
         # Leave room group
         await self.channel_layer.group_discard(
+            self.group_name,
             self.channel_name
         )
 
